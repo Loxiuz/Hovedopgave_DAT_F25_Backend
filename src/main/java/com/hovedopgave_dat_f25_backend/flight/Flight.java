@@ -15,10 +15,10 @@ public class Flight {
     private int id;
 
     @OneToOne
-    private Airport airport_origin;
+    private Airport airportOrigin;
 
     @OneToOne
-    private Airport airport_destination;
+    private Airport airportDestination;
 
     private String flightNumber;
 

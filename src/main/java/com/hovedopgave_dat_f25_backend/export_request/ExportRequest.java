@@ -27,7 +27,7 @@ public class ExportRequest {
 
     private String status;
 
-    private String file_name;
+    private String fileName;
 
-    private String file_size;
+    private String fileSize;
 }

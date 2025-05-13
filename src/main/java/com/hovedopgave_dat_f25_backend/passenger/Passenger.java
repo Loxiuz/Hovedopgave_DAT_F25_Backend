@@ -20,7 +20,7 @@ public class Passenger {
 
     private String name;
 
-    private LocalDateTime birthDate;
+    private LocalDateTime birthdate;
 
     private String nationality;
 
