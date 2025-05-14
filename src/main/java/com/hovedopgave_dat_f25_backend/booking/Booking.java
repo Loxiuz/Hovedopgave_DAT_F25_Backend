@@ -4,11 +4,13 @@ import com.hovedopgave_dat_f25_backend.flight.Flight;
 import com.hovedopgave_dat_f25_backend.passenger.Passenger;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class Booking {
 
     @Id

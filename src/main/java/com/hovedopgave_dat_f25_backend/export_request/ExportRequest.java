@@ -2,12 +2,14 @@ package com.hovedopgave_dat_f25_backend.export_request;
 import com.hovedopgave_dat_f25_backend.employee.Employee;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDate;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class ExportRequest {
 
     @Id
@@ -30,4 +32,5 @@ public class ExportRequest {
     private String fileName;
 
     private String fileSize;
+
 }
