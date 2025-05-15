@@ -16,8 +16,7 @@ public class ExportRequestController {
 
     @PostMapping("/flights")
     public ResponseEntity<byte[]> exportFlights(@RequestBody ExportRequestDTO exportRequestDTO){
-        ExportRequest ExportRequestFromDto = exportRequestService.fromDTO(exportRequestDTO);
-        byte[] fileBytes = exportRequestService.handleExportRequest(ExportRequestFromDto);
+        byte[] fileBytes = exportRequestService.handleExportRequest(exportRequestDTO);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_PLAIN);

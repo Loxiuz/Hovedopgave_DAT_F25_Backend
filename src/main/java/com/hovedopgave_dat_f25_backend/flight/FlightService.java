@@ -13,7 +13,17 @@ public class FlightService {
         this.flightRepository = flightRepository;
     }
 
-    public List<Flight> getFlights() {
-    return flightRepository.findAll();
+    public List<FlightDTO> getFlights() {
+
+    return flightRepository.findAll()
+            .stream()
+            .map(flight -> new FlightDTO(
+                    flight.getId(),
+                    flight.getAirportOrigin(),
+                    flight.getAirportDestination(),
+                    flight.getFlightNumber(),
+                    flight.getDepartureTime(),
+                    flight.getArrivalTime()))
+            .toList();
     }
 }
