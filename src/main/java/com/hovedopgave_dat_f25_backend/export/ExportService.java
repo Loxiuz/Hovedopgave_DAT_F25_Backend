@@ -9,19 +9,30 @@ import java.util.List;
 @Service
 public class ExportService {
 
-    public byte[] handleExportData(ExportRequest exportRequest){
+    public ExportService() {
+    }
 
+    public byte[] handleExportData(ExportRequest exportRequest){
+        String[] selectedEntities = exportRequest.getSelectedEntities().split(",");
+        String[] appliedFilters = exportRequest.getAppliedFilters().split(",");
+        String exportFormat = exportRequest.getExportFormat();
+        return exportData(selectedEntities, appliedFilters, exportFormat);
+    }
+
+    private byte[] exportData(String[] selectedEntities, String[] appliedFilters, String exportFormat){
+
+        return null;
     }
 
     public byte[] exportFlightData(List<FlightDTO> flights, String fileFormat){
         if(fileFormat.equalsIgnoreCase("csv")){
-            return exportToCsv(flights);
+            return exportFlightToCsv(flights);
         } else {
             throw new UnsupportedOperationException("Invalid export format: " + fileFormat);
         }
     }
 
-    private byte[] exportToCsv(List<FlightDTO> flights) {
+    private byte[] exportFlightToCsv(List<FlightDTO> flights) {
         StringBuilder builder = new StringBuilder();
         builder.append("FlightNumber,DepartureTime,ArrivalTime\n");
 

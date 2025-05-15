@@ -14,7 +14,6 @@ public class FlightService {
     }
 
     public List<FlightDTO> getFlights() {
-
     return flightRepository.findAll()
             .stream()
             .map(flight -> new FlightDTO(
