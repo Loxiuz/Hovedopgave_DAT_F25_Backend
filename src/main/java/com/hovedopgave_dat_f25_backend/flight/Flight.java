@@ -16,10 +16,10 @@ public class Flight {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne
+    @ManyToOne
     private Airport airportOrigin;
 
-    @OneToOne
+    @ManyToOne
     private Airport airportDestination;
 
     private String flightNumber;
