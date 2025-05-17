@@ -49,7 +49,7 @@ public class ExportService {
 
         for (String selectedEntity : selectedEntities) {
             builder.append("=== ").append(selectedEntity.toUpperCase()).append(" ===").append("\n");
-            CsvExportStructure<?> structure = buildColumnStructureForEntity(selectedEntity);
+            CsvExportStructure<?> structure = buildCsvColumnStructureForEntity(selectedEntity);
             if(structure != null){
                 builder.append(structure.columnDataBuilder()).append("\n");
             }
@@ -58,7 +58,7 @@ public class ExportService {
         return builder.toString().getBytes();
     }
 
-    private CsvExportStructure<?> buildColumnStructureForEntity(String selectedEntity) {
+    private CsvExportStructure<?> buildCsvColumnStructureForEntity(String selectedEntity) {
         return switch (selectedEntity.toLowerCase()) {
             case "flight" -> {
                 List<FlightDTO> flights = flightService.getAllFlights();

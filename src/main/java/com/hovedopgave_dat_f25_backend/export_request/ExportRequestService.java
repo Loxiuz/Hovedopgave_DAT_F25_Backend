@@ -20,12 +20,18 @@ public class ExportRequestService {
     }
 
     public byte[] handleExportRequest(ExportRequestDTO exportRequestDTO) {
-        ExportRequest ExportRequestFromDto = fromDTO(exportRequestDTO);
-        ExportRequestFromDto.setStatus("PENDING"); // Overvej om det skal være enum
+        ExportRequest exportRequestFromDto = fromDTO(exportRequestDTO);
+        exportRequestFromDto.setStatus("PENDING"); // Overvej om det skal være enum
         //Håndter fejl ved tom selectedEntities
-        exportRequestRepository.save(ExportRequestFromDto);
+        exportRequestRepository.save(exportRequestFromDto);
 
-        return exportService.processExportRequest(ExportRequestFromDto);
+        byte[] exportOutput = exportService.processExportRequest(exportRequestFromDto);
+
+        String fileSize = String.valueOf(exportOutput.length);
+        exportRequestFromDto.setFileSize(fileSize);
+        exportRequestRepository.save(exportRequestFromDto);
+
+        return exportOutput;
     }
 
 
