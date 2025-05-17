@@ -13,7 +13,7 @@ public class BookingService {
         this.bookingRepository = bookingRepository;
     }
 
-    public List<BookingDTO> getBookings(String flightId) {
+    public List<BookingDTO> getBookings() {
         return bookingRepository.findAll().stream().map(
                 booking -> new BookingDTO(
                         booking.getId(),

@@ -92,14 +92,15 @@ public class ExportService {
                 );
             }
             case "booking" -> {
-                List<BookingDTO> bookings = bookingService.getBookings("1");
+                List<BookingDTO> bookings = bookingService.getBookings();
                 yield new CsvExportStructure<>(
                         bookings,
-                        List.of("bookingNumber", "seatNumber", "status"),
+                        List.of("bookingNumber", "seatNumber", "status", "flightNumber"),
                         bookingData -> List.of(
                                 bookingData.bookingNumber(),
                                 bookingData.seatNumber(),
-                                bookingData.status()
+                                bookingData.status(),
+                                bookingData.flight().getFlightNumber()
                         )
                 );
             }
