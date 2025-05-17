@@ -9,20 +9,18 @@ import org.springframework.stereotype.Service;
 public class ExportRequestService {
 
     private final ExportRequestRepository exportRequestRepository;
-    private final ExportRequestService exportRequestService;
     private final ExportService exportService;
     private final EmployeeService employeeService;
 
 
-    public ExportRequestService(ExportRequestRepository exportRequestRepository, ExportRequestService exportRequestService, ExportService exportService, EmployeeService employeeService) {
+    public ExportRequestService(ExportRequestRepository exportRequestRepository, ExportService exportService, EmployeeService employeeService) {
         this.exportRequestRepository = exportRequestRepository;
-        this.exportRequestService = exportRequestService;
         this.exportService = exportService;
         this.employeeService = employeeService;
     }
 
     public byte[] handleExportRequest(ExportRequestDTO exportRequestDTO) {
-        ExportRequest ExportRequestFromDto = exportRequestService.fromDTO(exportRequestDTO);
+        ExportRequest ExportRequestFromDto = fromDTO(exportRequestDTO);
         ExportRequestFromDto.setStatus("PENDING"); // Overvej om det skal være enum
         //Håndter fejl ved tom selectedEntities
         exportRequestRepository.save(ExportRequestFromDto);

@@ -22,7 +22,11 @@ public class ExportService {
     CrewMemberService crewMemberService;
     BookingService bookingService;
 
-    public ExportService() {
+    public ExportService(FlightService flightService, PassengerService passengerService, CrewMemberService crewMemberService, BookingService bookingService) {
+        this.flightService = flightService;
+        this.passengerService = passengerService;
+        this.crewMemberService = crewMemberService;
+        this.bookingService = bookingService;
     }
 
     public byte[] processExportRequest(ExportRequest exportRequest){
@@ -44,6 +48,7 @@ public class ExportService {
         StringBuilder builder = new StringBuilder();
 
         for (String selectedEntity : selectedEntities) {
+            builder.append("=== ").append(selectedEntity.toUpperCase()).append(" ===").append("\n");
             CsvExportStructure<?> structure = buildColumnStructureForEntity(selectedEntity);
             if(structure != null){
                 builder.append(structure.columnDataBuilder()).append("\n");
