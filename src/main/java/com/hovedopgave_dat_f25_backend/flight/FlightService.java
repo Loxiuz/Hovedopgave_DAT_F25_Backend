@@ -13,7 +13,7 @@ public class FlightService {
         this.flightRepository = flightRepository;
     }
 
-    public List<FlightDTO> getFlights() {
+    public List<FlightDTO> getAllFlights() {
     return flightRepository.findAll()
             .stream()
             .map(flight -> new FlightDTO(

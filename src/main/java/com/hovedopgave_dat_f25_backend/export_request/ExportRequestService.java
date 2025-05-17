@@ -27,7 +27,7 @@ public class ExportRequestService {
         //Håndter fejl ved tom selectedEntities
         exportRequestRepository.save(ExportRequestFromDto);
 
-        return exportService.handleExportData(ExportRequestFromDto);
+        return exportService.processExportRequest(ExportRequestFromDto);
     }
 
 
