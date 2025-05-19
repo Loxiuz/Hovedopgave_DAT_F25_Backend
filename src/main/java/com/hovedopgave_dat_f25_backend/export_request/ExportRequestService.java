@@ -34,8 +34,7 @@ public class ExportRequestService {
         return exportOutput;
     }
 
-
-    public ExportRequest fromDTO(ExportRequestDTO exportRequestDTO) {
+    private ExportRequest fromDTO(ExportRequestDTO exportRequestDTO) {
         ExportRequest exportRequest = new ExportRequest();
         Employee employee = employeeService.getEmployee(exportRequestDTO.employeeId());
 

@@ -64,7 +64,7 @@ public class ExportService {
                 List<FlightDTO> flights = flightService.getAllFlights();
                 yield new CsvExportStructure<>(
                         flights,
-                        List.of("FlightNumber", "Departure", "Arrival"),
+                        List.of("flightNumber", "departure", "arrival"),
                         flightData -> List.of(
                                 flightData.flightNumber(),
                                 flightData.departureTime(),
@@ -76,7 +76,7 @@ public class ExportService {
                 List<PassengerDTO> passengers = passengerService.getAllPassengers();
                 yield new CsvExportStructure<>(
                         passengers,
-                        List.of("Birthdate", "name", "nationality"),
+                        List.of("birthdate", "name", "nationality"),
                         passengerData -> List.of(
                                 passengerData.birthdate().toString(),
                                 passengerData.name(),

@@ -14,7 +14,7 @@ public class ExportRequestController {
         this.exportRequestService = exportRequestService;
     }
 
-    @PostMapping("all-data-from-entities")
+    @PostMapping
     public ResponseEntity<byte[]> exportAllDataFromEntities(@RequestBody ExportRequestDTO exportRequestDTO){
         byte[] fileBytes = exportRequestService.handleExportRequest(exportRequestDTO);
 
