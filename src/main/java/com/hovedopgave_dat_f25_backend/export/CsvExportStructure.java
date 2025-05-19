@@ -6,7 +6,7 @@ import java.util.function.Function;
 public record CsvExportStructure<E>(List<E> data, List<String> columnHeaderStructure,
                                     Function<E, List<String>> rowMapper) {
 
-    public String columnDataBuilder() {
+    public String buildColumnData() {
         StringBuilder builder = new StringBuilder();
 
         builder.append(String.join(",", columnHeaderStructure)).append("\n");

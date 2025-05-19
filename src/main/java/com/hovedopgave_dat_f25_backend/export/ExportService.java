@@ -51,7 +51,7 @@ public class ExportService {
             builder.append("=== ").append(selectedEntity.toUpperCase()).append(" ===").append("\n");
             CsvExportStructure<?> structure = buildCsvColumnStructureForEntity(selectedEntity);
             if(structure != null){
-                builder.append(structure.columnDataBuilder()).append("\n");
+                builder.append(structure.buildColumnData()).append("\n");
             }
         }
 

@@ -29,7 +29,7 @@ public class ExportRequestService {
 
         String fileSize = String.valueOf(exportOutput.length);
         exportRequestFromDto.setFileSize(fileSize);
-        exportRequestRepository.save(exportRequestFromDto);
+        exportRequestRepository.save(exportRequestFromDto); //Muligvis forbedre opdatering af felt
 
         return exportOutput;
     }
