@@ -7,6 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class ExportRequestControllerTest {
 
     @Test
-    void exportAllDataFromEntities() {
+    void exportDataFromEntities() {
     }
 }

@@ -15,7 +15,7 @@ public class ExportRequestController {
     }
 
     @PostMapping
-    public ResponseEntity<byte[]> exportAllDataFromEntities(@RequestBody ExportRequestDTO exportRequestDTO){
+    public ResponseEntity<byte[]> exportDataFromEntities(@RequestBody ExportRequestDTO exportRequestDTO){
         byte[] fileBytes = exportRequestService.handleExportRequest(exportRequestDTO);
 
         HttpHeaders headers = new HttpHeaders();
