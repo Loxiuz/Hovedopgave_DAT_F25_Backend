@@ -22,7 +22,7 @@ public class ExportRequestService {
     public byte[] handleExportRequest(ExportRequestDTO exportRequestDTO) {
         ExportRequest exportRequestFromDto = fromDTO(exportRequestDTO);
         exportRequestFromDto.setStatus("PENDING"); // Overvej om det skal være enum
-        //Håndter fejl ved tom selectedEntities
+        //Håndter fejl ved tom selectedEntities (og opdater test)
         exportRequestRepository.save(exportRequestFromDto);
 
         byte[] exportOutput = exportService.processExportRequest(exportRequestFromDto);
