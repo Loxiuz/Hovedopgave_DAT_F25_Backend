@@ -22,6 +22,12 @@ public class ExportRequestController {
         headers.setContentType(MediaType.TEXT_PLAIN);
         headers.setContentDisposition(ContentDisposition.attachment().filename(exportRequestDTO.fileName()).build());
 
+        if (fileBytes != null) {
+            headers.setContentLength(fileBytes.length);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
     }
 }

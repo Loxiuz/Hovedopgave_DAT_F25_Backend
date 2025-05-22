@@ -31,6 +31,9 @@ public class ExportService {
 
     public byte[] processExportRequest(ExportRequest exportRequest){
         List<String> selectedEntities = Arrays.asList(exportRequest.getSelectedEntities().split(","));
+        if(selectedEntities.isEmpty() || selectedEntities.get(0).isEmpty() ){
+            throw new IllegalArgumentException("Selected entities cannot be empty");
+        }
         List<String> appliedFilters = Arrays.asList(exportRequest.getAppliedFilters().split(","));
         String exportFormat = exportRequest.getExportFormat();
         return createExport(selectedEntities, appliedFilters, exportFormat);

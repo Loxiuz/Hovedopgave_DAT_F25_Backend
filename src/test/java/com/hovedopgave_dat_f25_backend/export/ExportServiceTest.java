@@ -5,6 +5,7 @@ import com.hovedopgave_dat_f25_backend.booking.BookingRepository;
 import com.hovedopgave_dat_f25_backend.booking.BookingService;
 import com.hovedopgave_dat_f25_backend.crew_member.CrewMemberRepository;
 import com.hovedopgave_dat_f25_backend.crew_member.CrewMemberService;
+import com.hovedopgave_dat_f25_backend.employee.Employee;
 import com.hovedopgave_dat_f25_backend.export_request.ExportRequest;
 import com.hovedopgave_dat_f25_backend.flight.Flight;
 import com.hovedopgave_dat_f25_backend.flight.FlightRepository;
@@ -14,18 +15,21 @@ import com.hovedopgave_dat_f25_backend.passenger.PassengerRepository;
 import com.hovedopgave_dat_f25_backend.passenger.PassengerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class ExportServiceTest {
 
     @Mock
@@ -59,10 +63,8 @@ class ExportServiceTest {
 
         Airport airport = new Airport();
         airport.setId(1);
-        airport.setCountry("Test Country");
         Airport airport2 = new Airport();
         airport2.setId(2);
-        airport2.setCountry("Test Country 2");
 
         Flight flight = new Flight();
         flight.setId(1);
@@ -70,9 +72,19 @@ class ExportServiceTest {
         flight.setAirportOrigin(airport);
         flight.setAirportDestination(airport2);
 
-        when(flightRepository.findAll()).thenReturn(List.of());
+        String departureTime = LocalDateTime.now().toString();
+        String arrivalTime = LocalDateTime.now().plusHours(2).toString();
+
+        flight.setDepartureTime(departureTime);
+        flight.setArrivalTime(arrivalTime);
+
+        when(flightRepository.findAll()).thenReturn(List.of(flight));
+
+        Employee employee = new Employee();
+        employee.setId(1);
 
         ExportRequest exportRequest = new ExportRequest();
+        exportRequest.setEmployee(employee);
         exportRequest.setSelectedEntities("flight");
         exportRequest.setAppliedFilters("all");
         exportRequest.setExportFormat("csv");
@@ -80,8 +92,7 @@ class ExportServiceTest {
         byte[] result = exportService.processExportRequest(exportRequest);
         String expected = "=== FLIGHT ===\n" +
                 "flightNumber,departure,arrival\n" +
-                "Test Flight,Test Country,Test Country 2\n" +
-                "Test Flight 2,Test Country,Test Country 2\n";
+                "Test Flight," + departureTime + "," + arrivalTime +"\n\n";
         assertEquals(expected, new String(result));
     }
 
@@ -89,10 +100,8 @@ class ExportServiceTest {
     void testProcessExportRequestMultipleSelectedEntities() {
         Airport airport = new Airport();
         airport.setId(1);
-        airport.setCountry("Test Country");
         Airport airport2 = new Airport();
         airport2.setId(2);
-        airport2.setCountry("Test Country 2");
 
         Flight flight = new Flight();
         flight.setId(1);
@@ -100,12 +109,18 @@ class ExportServiceTest {
         flight.setAirportOrigin(airport);
         flight.setAirportDestination(airport2);
 
+        String departureTime = LocalDateTime.now().toString();
+        String arrivalTime = LocalDateTime.now().plusHours(2).toString();
+        flight.setDepartureTime(departureTime);
+        flight.setArrivalTime(arrivalTime);
 
         Passenger passenger = new Passenger();
         passenger.setId(1);
         passenger.setName("John Doe");
-        passenger.setBirthdate(LocalDateTime.now());
         passenger.setNationality("nationality");
+
+        LocalDateTime birthdate = LocalDateTime.now();
+        passenger.setBirthdate(birthdate);
 
         when(flightRepository.findAll()).thenReturn(List.of(flight));
         when(passengerRepository.findAll()).thenReturn(List.of(passenger));
@@ -117,11 +132,11 @@ class ExportServiceTest {
 
         byte[] result = exportService.processExportRequest(exportRequest);
         String expected = "=== FLIGHT ===\n" +
-                "FlightNumber,Departure,Arrival\n" +
-                "Test Flight,Test Country,Test Country 2\n" +
+                "flightNumber,departure,arrival\n" +
+                "Test Flight," + departureTime + "," + arrivalTime + "\n\n" +
                 "=== PASSENGER ===\n" +
-                "Name,birthdate,Nationality\n" +
-                "John Doe, mail@mail.com\n";
+                "birthdate,name,nationality\n" +
+                 birthdate + ",John Doe,nationality\n\n";
         assertEquals(expected, new String(result));
     }
 
@@ -132,9 +147,9 @@ class ExportServiceTest {
         exportRequest.setAppliedFilters("all");
         exportRequest.setExportFormat("csv");
 
-        byte[] result = exportService.processExportRequest(exportRequest);
-        String expected = "";
-        assertEquals(expected, new String(result));
+       assertThrows(IllegalArgumentException.class, () -> {
+            exportService.processExportRequest(exportRequest);
+        });
     }
 
     @Test
