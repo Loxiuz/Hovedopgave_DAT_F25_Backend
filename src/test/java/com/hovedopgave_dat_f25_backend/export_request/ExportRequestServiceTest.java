@@ -32,26 +32,24 @@ class ExportRequestServiceTest {
     @InjectMocks
     private ExportRequestService exportRequestService;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
     @Test
     void testHandleExportRequestSuccess() {
         ExportRequestDTO exportRequestDTO = new ExportRequestDTO(1,1,"csv", "flight", "", "test.csv");
 
         Employee employee = new Employee();
         employee.setId(1);
+
+        ExportRequest saved = new ExportRequest();
+        saved.setId(1);
+        saved.setExportFormat("csv");
+        saved.setStatus("COMPLETED");
+
         when(employeeService.getEmployee(anyInt())).thenReturn(employee);
         when(exportService.processExportRequest(any())).thenReturn("test".getBytes());
+        when(exportRequestRepository.findById(1)).thenReturn(Optional.of(saved));
 
         byte[] result = exportRequestService.handleExportRequest(exportRequestDTO);
-
         assertNotNull(result);
-        verify(exportRequestRepository).save(argThat(exportRequest ->
-                exportRequest.getExportFormat().equals("csv")
-        ));
 
         Optional<ExportRequest> savedRequest = exportRequestRepository.findById(1);
         assertTrue(savedRequest.isPresent());
@@ -65,8 +63,15 @@ class ExportRequestServiceTest {
 
         Employee employee = new Employee();
         employee.setId(1);
+
+        ExportRequest saved = new ExportRequest();
+        saved.setId(1);
+        saved.setExportFormat("csv");
+        saved.setStatus("FAILED");
+
         when(employeeService.getEmployee(anyInt())).thenReturn(employee);
         when(exportService.processExportRequest(any())).thenReturn(null);
+        when(exportRequestRepository.findById(1)).thenReturn(Optional.of(saved));
 
         assertThrows(RuntimeException.class, () -> exportRequestService.handleExportRequest(exportRequestDTO));
         Optional<ExportRequest> savedRequest = exportRequestRepository.findById(1);

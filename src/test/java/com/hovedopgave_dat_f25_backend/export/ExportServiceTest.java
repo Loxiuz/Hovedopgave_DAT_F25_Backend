@@ -54,7 +54,6 @@ class ExportServiceTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
         exportService = new ExportService(flightService, passengerService, crewMemberService, bookingService);
     }
 
