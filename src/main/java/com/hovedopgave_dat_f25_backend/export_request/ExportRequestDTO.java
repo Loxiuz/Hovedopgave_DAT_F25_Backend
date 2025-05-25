@@ -1,4 +1,8 @@
 package com.hovedopgave_dat_f25_backend.export_request;
 
-public record ExportRequestDTO(int id, int employeeId, String exportFormat, String selectedEntities, String appliedFilters, String fileName) {
+import com.fasterxml.jackson.databind.JsonNode;
+
+import java.util.List;
+
+public record ExportRequestDTO(int id, int employeeId, String exportFormat, String selectedEntities, List<JsonNode> appliedFilters, String fileName) {
 }

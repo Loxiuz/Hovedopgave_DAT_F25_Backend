@@ -34,7 +34,7 @@ class ExportRequestServiceTest {
 
     @Test
     void testHandleExportRequestSuccess() {
-        ExportRequestDTO exportRequestDTO = new ExportRequestDTO(1,1,"csv", "flight", "", "test.csv");
+        ExportRequestDTO exportRequestDTO = new ExportRequestDTO(1,1,"csv", "flight", null, "test.csv");
 
         Employee employee = new Employee();
         employee.setId(1);
@@ -59,7 +59,7 @@ class ExportRequestServiceTest {
 
     @Test
     void testHandleExportRequestFailed(){
-        ExportRequestDTO exportRequestDTO = new ExportRequestDTO(1,1,"csv", "flight", "", "test.csv");
+        ExportRequestDTO exportRequestDTO = new ExportRequestDTO(1,1,"csv", "flight", null, "test.csv");
 
         Employee employee = new Employee();
         employee.setId(1);
@@ -81,21 +81,21 @@ class ExportRequestServiceTest {
 
     @Test
     void testHandleExportRequestWithEmptySelectedEntities() {
-        ExportRequestDTO exportRequestDTO = new ExportRequestDTO(1,1,"csv", "", "", "test.csv");
+        ExportRequestDTO exportRequestDTO = new ExportRequestDTO(1,1,"csv", "", null, "test.csv");
 
         assertThrows(IllegalArgumentException.class, () -> exportRequestService.handleExportRequest(exportRequestDTO));
     }
 
     @Test
     void testHandleExportRequestWithNullSelectedEntities() {
-        ExportRequestDTO exportRequestDTO = new ExportRequestDTO(1,1,"csv", null, "", "test.csv");
+        ExportRequestDTO exportRequestDTO = new ExportRequestDTO(1,1,"csv", null, null, "test.csv");
 
         assertThrows(IllegalArgumentException.class, () -> exportRequestService.handleExportRequest(exportRequestDTO));
     }
 
     @Test
     void testHandleExportRequestWithInvalidEmployee() {
-        ExportRequestDTO exportRequestDTO = new ExportRequestDTO(1,1,"csv", "flight", "", "test.csv");
+        ExportRequestDTO exportRequestDTO = new ExportRequestDTO(1,1,"csv", "flight", null, "test.csv");
 
         assertThrows(IllegalArgumentException.class, () -> exportRequestService.handleExportRequest(exportRequestDTO));
     }

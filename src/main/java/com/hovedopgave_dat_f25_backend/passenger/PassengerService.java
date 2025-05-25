@@ -1,5 +1,6 @@
 package com.hovedopgave_dat_f25_backend.passenger;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,11 +17,7 @@ public class PassengerService {
     public List<PassengerDTO> getAllPassengers() {
         return passengerRepository.findAll().stream().map(
                 passenger -> new PassengerDTO(
-                        passenger.getId(),
-                        passenger.getName(),
-                        passenger.getBirthdate(),
-                        passenger.getNationality()
-
+                        String.valueOf(passenger.getId())
                 )
         ).toList();
     }

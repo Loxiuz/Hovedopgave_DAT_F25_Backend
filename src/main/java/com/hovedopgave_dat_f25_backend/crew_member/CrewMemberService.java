@@ -1,5 +1,7 @@
 package com.hovedopgave_dat_f25_backend.crew_member;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.hovedopgave_dat_f25_backend.crew_member_assignment.CrewMemberAssignmentService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.List;
 public class CrewMemberService {
 
     CrewMemberRepository crewMemberRepository;
+    CrewMemberAssignmentService crewMemberAssignmentService;
 
     public CrewMemberService(CrewMemberRepository crewMemberRepository) {
         this.crewMemberRepository = crewMemberRepository;
@@ -16,11 +19,14 @@ public class CrewMemberService {
     public List<CrewMemberDTO> getAllCrewMembers() {
         return crewMemberRepository.findAll().stream().map(
                 crewMember -> new CrewMemberDTO(
-                        crewMember.getId(),
-                        crewMember.getName(),
-                        crewMember.getEmail(),
-                        crewMember.getPhoneNumber()
+                        String.valueOf(crewMember.getId())
                 )
         ).toList();
+    }
+
+
+
+    public CrewMemberDTO toDto(CrewMember crewMember) {
+        return new CrewMemberDTO(String.valueOf(crewMember.getId()));
     }
 }

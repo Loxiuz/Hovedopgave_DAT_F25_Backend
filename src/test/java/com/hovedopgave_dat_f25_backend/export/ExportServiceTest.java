@@ -5,6 +5,8 @@ import com.hovedopgave_dat_f25_backend.booking.BookingRepository;
 import com.hovedopgave_dat_f25_backend.booking.BookingService;
 import com.hovedopgave_dat_f25_backend.crew_member.CrewMemberRepository;
 import com.hovedopgave_dat_f25_backend.crew_member.CrewMemberService;
+import com.hovedopgave_dat_f25_backend.crew_member_assignment.CrewMemberAssignmentRepository;
+import com.hovedopgave_dat_f25_backend.crew_member_assignment.CrewMemberAssignmentService;
 import com.hovedopgave_dat_f25_backend.employee.Employee;
 import com.hovedopgave_dat_f25_backend.export_request.ExportRequest;
 import com.hovedopgave_dat_f25_backend.flight.Flight;
@@ -28,6 +30,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @ExtendWith(MockitoExtension.class)
 class ExportServiceTest {
@@ -40,6 +43,8 @@ class ExportServiceTest {
     BookingRepository bookingRepository;
     @Mock
     CrewMemberRepository crewMemberRepository;
+    @Mock
+    CrewMemberAssignmentRepository crewMemberAssignmentRepository;
 
     @InjectMocks
     FlightService flightService;
@@ -49,12 +54,14 @@ class ExportServiceTest {
     BookingService bookingService;
     @InjectMocks
     CrewMemberService crewMemberService;
+    @InjectMocks
+    CrewMemberAssignmentService crewMemberAssignmentService;
 
     ExportService exportService;
 
     @BeforeEach
     void setUp() {
-        exportService = new ExportService(flightService, passengerService, crewMemberService, bookingService);
+        exportService = new ExportService(flightService, passengerService, crewMemberService, bookingService, crewMemberAssignmentService);
     }
 
     @Test
@@ -85,7 +92,6 @@ class ExportServiceTest {
         ExportRequest exportRequest = new ExportRequest();
         exportRequest.setEmployee(employee);
         exportRequest.setSelectedEntities("flight");
-        exportRequest.setAppliedFilters("all");
         exportRequest.setExportFormat("csv");
 
         byte[] result = exportService.processExportRequest(exportRequest);
@@ -126,7 +132,6 @@ class ExportServiceTest {
 
         ExportRequest exportRequest = new ExportRequest();
         exportRequest.setSelectedEntities("flight,passenger");
-        exportRequest.setAppliedFilters("all");
         exportRequest.setExportFormat("csv");
 
         byte[] result = exportService.processExportRequest(exportRequest);
@@ -143,7 +148,6 @@ class ExportServiceTest {
     void testProcessExportRequestEmptySelectedEntities() {
         ExportRequest exportRequest = new ExportRequest();
         exportRequest.setSelectedEntities("");
-        exportRequest.setAppliedFilters("all");
         exportRequest.setExportFormat("csv");
 
        assertThrows(IllegalArgumentException.class, () -> {
@@ -155,7 +159,6 @@ class ExportServiceTest {
     void testProcessExportRequestInvalidExportFormat() {
         ExportRequest exportRequest = new ExportRequest();
         exportRequest.setSelectedEntities("flight");
-        exportRequest.setAppliedFilters("all");
         exportRequest.setExportFormat("invalid_format");
 
         try {
