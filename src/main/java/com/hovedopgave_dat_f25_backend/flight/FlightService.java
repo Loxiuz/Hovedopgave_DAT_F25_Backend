@@ -55,16 +55,6 @@ public class FlightService {
                             .filter(flight -> flight.arrivalTime().equalsIgnoreCase(valueStr))
                             .toList();
                 }
-                if (fieldStr.equals("airportOrigin")) {
-                    flights = flights.stream()
-                            .filter(flight -> String.valueOf(flight.airportOrigin().getId()).equalsIgnoreCase(valueStr))
-                            .toList();
-                }
-                if (fieldStr.equals("airportDestination")) {
-                    flights = flights.stream()
-                            .filter(flight -> String.valueOf(flight.airportDestination().getId()).equalsIgnoreCase(valueStr))
-                            .toList();
-                }
             }
         }
 

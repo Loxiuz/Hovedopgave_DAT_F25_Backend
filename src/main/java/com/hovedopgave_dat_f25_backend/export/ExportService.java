@@ -98,7 +98,7 @@ public class ExportService {
             case "crew_member" -> {
                 List<CrewMemberDTO> crewMembers = crewMemberAssignmentService.getFilteredCrewMembers(
                         appliedFilters.stream().filter(
-                                filter -> filter.has("crewMember")
+                                filter -> filter.has("crew_member")
                         ).toList());
                 yield new CsvExportStructure<>(
                         crewMembers,

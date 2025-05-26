@@ -32,15 +32,15 @@ public class CrewMemberAssignmentService {
         List<CrewMemberAssignmentDTO> crewMemberAssignments = getAllCrewMemberAssignments();
 
         for(JsonNode filter : filters) {
-            JsonNode field = filter.get("crewMember").get("field");
-            JsonNode value = filter.get("crewMember").get("value");
+            JsonNode field = filter.get("crew_member").get("field");
+            JsonNode value = filter.get("crew_member").get("value");
 
             if(field != null && value != null) {
                 String fieldStr = field.asText();
                 String valueStr = value.asText();
                 System.out.println("Field: " + fieldStr + ", Value: " + valueStr);
 
-                if (filter.has("crewMember")) {
+                if (filter.has("crew_member")) {
                     if (fieldStr.equals("flightNumber")) {
                         crewMembers = crewMembers.stream().filter(
                                 crewMember -> crewMemberAssignments.stream()
