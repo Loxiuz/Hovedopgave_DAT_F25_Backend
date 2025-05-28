@@ -10,7 +10,6 @@ import java.util.List;
 public class CrewMemberService {
 
     CrewMemberRepository crewMemberRepository;
-    CrewMemberAssignmentService crewMemberAssignmentService;
 
     public CrewMemberService(CrewMemberRepository crewMemberRepository) {
         this.crewMemberRepository = crewMemberRepository;
@@ -22,11 +21,5 @@ public class CrewMemberService {
                         String.valueOf(crewMember.getId())
                 )
         ).toList();
-    }
-
-
-
-    public CrewMemberDTO toDto(CrewMember crewMember) {
-        return new CrewMemberDTO(String.valueOf(crewMember.getId()));
     }
 }

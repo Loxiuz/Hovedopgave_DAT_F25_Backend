@@ -1,6 +1,7 @@
 package com.hovedopgave_dat_f25_backend.export_request;
 
 import com.hovedopgave_dat_f25_backend.employee.Employee;
+import com.hovedopgave_dat_f25_backend.employee.EmployeeDTO;
 import com.hovedopgave_dat_f25_backend.employee.EmployeeService;
 import com.hovedopgave_dat_f25_backend.export.ExportService;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,12 @@ public class ExportRequestService {
         this.exportRequestRepository = exportRequestRepository;
         this.exportService = exportService;
         this.employeeService = employeeService;
+    }
+
+    public ExportRequestDTO[] getAllExportRequests() {
+        return exportRequestRepository.findAll().stream()
+                .map(this::toDTO)
+                .toArray(ExportRequestDTO[]::new);
     }
 
     public byte[] handleExportRequest(ExportRequestDTO exportRequestDTO) {
@@ -48,7 +55,7 @@ public class ExportRequestService {
 
     private ExportRequest fromDTO(ExportRequestDTO exportRequestDTO) {
         ExportRequest exportRequest = new ExportRequest();
-        Employee employee = employeeService.getEmployee(exportRequestDTO.employeeId());
+        EmployeeDTO employee = employeeService.getEmployee(exportRequestDTO.employeeId());
         if(employee == null) {
             throw new IllegalArgumentException("Employee from ExportRequestDTO not found");
         }
@@ -59,7 +66,14 @@ public class ExportRequestService {
         return exportRequest;
     }
 
-//    public ExportRequestDTO toDTO(ExportRequest er) {
-//        return new ExportRequestDTO(er.getId(), er.getEmployee(),er.getExportCreation(),er.getExportFormat(),er.getSelectedEntities(),er.getAppliedFilters(),er.getExportFormat(),er.getFileName(), er.getFileSize());
-//    }
+    private ExportRequestDTO toDTO(ExportRequest exportRequest) {
+        return new ExportRequestDTO(
+                exportRequest.getId(),
+                exportRequest.getEmployee().getId(),
+                exportRequest.getExportFormat(),
+                exportRequest.getSelectedEntities(),
+                exportRequest.getAppliedFilters(),
+                exportRequest.getFileName()
+        );
+    }
 }

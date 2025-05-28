@@ -13,8 +13,17 @@ public class EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
-    public Employee getEmployee(int id) {
+    public EmployeeDTO getEmployee(int id) {
         Optional<Employee> e = employeeRepository.findById(id);
-        return e.orElse(null);
+    if (e.isPresent()) {
+            Employee employee = e.get();
+            return new EmployeeDTO(
+                    employee.getId(),
+                    employee.getName(),
+                    employee.getEmail()
+            );
+    } else {
+            return null;
+        }
     }
 }

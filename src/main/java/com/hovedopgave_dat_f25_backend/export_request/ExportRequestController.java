@@ -28,4 +28,14 @@ public class ExportRequestController {
 
         return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
     }
+
+    @GetMapping("/all-requests")
+    public ResponseEntity<ExportRequestDTO[]> getAllExportRequests() {
+        ExportRequestDTO[] exportRequests = exportRequestService.getAllExportRequests();
+        if (exportRequests != null && exportRequests.length > 0) {
+            return new ResponseEntity<>(exportRequests, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+    }
 }

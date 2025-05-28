@@ -13,7 +13,6 @@ public class CrewMemberAssignmentService {
 
     CrewMemberAssignmentRepository crewMemberAssignmentRepository;
     CrewMemberService crewMemberService;
-    
 
     public CrewMemberAssignmentService(CrewMemberAssignmentRepository crewMemberAssignmentRepository, CrewMemberService crewMemberService) {
         this.crewMemberAssignmentRepository = crewMemberAssignmentRepository;
@@ -62,11 +61,11 @@ public class CrewMemberAssignmentService {
         return crewMembers;
     }
 
-    public CrewMemberAssignmentDTO toDto(CrewMemberAssignment crewMemberAssignment) {
+    private CrewMemberAssignmentDTO toDto(CrewMemberAssignment crewMemberAssignment) {
         return new CrewMemberAssignmentDTO(
                 crewMemberAssignment.getId(),
-                crewMemberAssignment.getFlight().getFlightNumber(),
                 String.valueOf(crewMemberAssignment.getCrewMember().getId()),
+                crewMemberAssignment.getFlight().getFlightNumber(),
                 crewMemberAssignment.getRole()
         );
     }

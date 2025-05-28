@@ -55,7 +55,7 @@ public class BookingService {
         return bookings;
     }
 
-    public BookingDTO toDto(Booking booking) {
+    private BookingDTO toDto(Booking booking) {
         return new BookingDTO(
                String.valueOf(booking.getPassenger().getId()),
                 booking.getFlight().getFlightNumber(),

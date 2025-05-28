@@ -1,6 +1,7 @@
 package com.hovedopgave_dat_f25_backend.export_request;
 
 import com.hovedopgave_dat_f25_backend.employee.Employee;
+import com.hovedopgave_dat_f25_backend.employee.EmployeeDTO;
 import com.hovedopgave_dat_f25_backend.employee.EmployeeService;
 import com.hovedopgave_dat_f25_backend.export.ExportService;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +13,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,11 +35,32 @@ class ExportRequestServiceTest {
     private ExportRequestService exportRequestService;
 
     @Test
+    void testGetAllExportRequests() {
+        Employee employee1 = new Employee();
+        employee1.setId(1);
+        Employee employee2 = new Employee();
+        employee2.setId(2);
+        ExportRequest exportRequest1 = new ExportRequest();
+        exportRequest1.setId(1);
+        exportRequest1.setEmployee(employee1);
+
+        ExportRequest exportRequest2 = new ExportRequest();
+        exportRequest2.setId(2);
+        exportRequest2.setEmployee(employee2);
+        when(exportRequestRepository.findAll()).thenReturn(List.of(exportRequest1, exportRequest2));
+
+        ExportRequestDTO[] result = exportRequestService.getAllExportRequests();
+        assertNotNull(result);
+        assertEquals(2, result.length);
+        assertEquals(1, result[0].id());
+        assertEquals(2, result[1].id());
+    }
+
+    @Test
     void testHandleExportRequestSuccess() {
         ExportRequestDTO exportRequestDTO = new ExportRequestDTO(1,1,"csv", "flight", null, "test.csv");
 
-        Employee employee = new Employee();
-        employee.setId(1);
+        EmployeeDTO employee = new EmployeeDTO(1, "", "");
 
         ExportRequest saved = new ExportRequest();
         saved.setId(1);
@@ -61,8 +84,7 @@ class ExportRequestServiceTest {
     void testHandleExportRequestFailed(){
         ExportRequestDTO exportRequestDTO = new ExportRequestDTO(1,1,"csv", "flight", null, "test.csv");
 
-        Employee employee = new Employee();
-        employee.setId(1);
+        EmployeeDTO employee = new EmployeeDTO(1, "", "");
 
         ExportRequest saved = new ExportRequest();
         saved.setId(1);
@@ -99,4 +121,6 @@ class ExportRequestServiceTest {
 
         assertThrows(IllegalArgumentException.class, () -> exportRequestService.handleExportRequest(exportRequestDTO));
     }
+
+
 }
