@@ -28,8 +28,8 @@ class EmployeeServiceTest {
 
         when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
 
-        EmployeeDTO result = employeeService.getEmployee(employeeId);
+        Employee result = employeeService.getEmployee(employeeId);
         assertNotNull(result);
-        assertEquals(employeeId, result.id());
+        assertEquals(employeeId, result.getId());
     }
 }

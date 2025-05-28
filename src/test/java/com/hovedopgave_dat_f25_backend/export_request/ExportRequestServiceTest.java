@@ -1,24 +1,19 @@
 package com.hovedopgave_dat_f25_backend.export_request;
 
 import com.hovedopgave_dat_f25_backend.employee.Employee;
-import com.hovedopgave_dat_f25_backend.employee.EmployeeDTO;
 import com.hovedopgave_dat_f25_backend.employee.EmployeeService;
 import com.hovedopgave_dat_f25_backend.export.ExportService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -58,9 +53,10 @@ class ExportRequestServiceTest {
 
     @Test
     void testHandleExportRequestSuccess() {
-        ExportRequestDTO exportRequestDTO = new ExportRequestDTO(1,1,"csv", "flight", null, "test.csv");
+        ExportRequestDTO exportRequestDTO = new ExportRequestDTO(1,1, "csv","", "flight", null, "test.csv", null, "");
 
-        EmployeeDTO employee = new EmployeeDTO(1, "", "");
+        Employee employee = new Employee();
+        employee.setId(1);
 
         ExportRequest saved = new ExportRequest();
         saved.setId(1);
@@ -82,9 +78,10 @@ class ExportRequestServiceTest {
 
     @Test
     void testHandleExportRequestFailed(){
-        ExportRequestDTO exportRequestDTO = new ExportRequestDTO(1,1,"csv", "flight", null, "test.csv");
+        ExportRequestDTO exportRequestDTO = new ExportRequestDTO(1,1,"csv", "", "flight", null, "test.csv", null, "");
 
-        EmployeeDTO employee = new EmployeeDTO(1, "", "");
+        Employee employee = new Employee();
+        employee.setId(1);
 
         ExportRequest saved = new ExportRequest();
         saved.setId(1);
@@ -103,21 +100,23 @@ class ExportRequestServiceTest {
 
     @Test
     void testHandleExportRequestWithEmptySelectedEntities() {
-        ExportRequestDTO exportRequestDTO = new ExportRequestDTO(1,1,"csv", "", null, "test.csv");
+        ExportRequestDTO exportRequestDTO = new ExportRequestDTO(1,1,"csv", "", null, null, "", "", "");
 
         assertThrows(IllegalArgumentException.class, () -> exportRequestService.handleExportRequest(exportRequestDTO));
     }
 
     @Test
     void testHandleExportRequestWithNullSelectedEntities() {
-        ExportRequestDTO exportRequestDTO = new ExportRequestDTO(1,1,"csv", null, null, "test.csv");
+        ExportRequestDTO exportRequestDTO = new ExportRequestDTO(1,1,"csv", "", null, null, "test.csv", null, "");
 
         assertThrows(IllegalArgumentException.class, () -> exportRequestService.handleExportRequest(exportRequestDTO));
     }
 
     @Test
     void testHandleExportRequestWithInvalidEmployee() {
-        ExportRequestDTO exportRequestDTO = new ExportRequestDTO(1,1,"csv", "flight", null, "test.csv");
+        ExportRequestDTO exportRequestDTO = new ExportRequestDTO(1,1,"csv", "", "flight", null, "test.csv", null, "");
+
+        when(employeeService.getEmployee(anyInt())).thenReturn(null);
 
         assertThrows(IllegalArgumentException.class, () -> exportRequestService.handleExportRequest(exportRequestDTO));
     }

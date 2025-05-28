@@ -1,7 +1,6 @@
 package com.hovedopgave_dat_f25_backend.export_request;
 
 import com.hovedopgave_dat_f25_backend.employee.Employee;
-import com.hovedopgave_dat_f25_backend.employee.EmployeeDTO;
 import com.hovedopgave_dat_f25_backend.employee.EmployeeService;
 import com.hovedopgave_dat_f25_backend.export.ExportService;
 import org.springframework.stereotype.Service;
@@ -55,14 +54,16 @@ public class ExportRequestService {
 
     private ExportRequest fromDTO(ExportRequestDTO exportRequestDTO) {
         ExportRequest exportRequest = new ExportRequest();
-        EmployeeDTO employee = employeeService.getEmployee(exportRequestDTO.employeeId());
+        Employee employee = employeeService.getEmployee(exportRequestDTO.employeeId());
         if(employee == null) {
             throw new IllegalArgumentException("Employee from ExportRequestDTO not found");
         }
+        exportRequest.setEmployee(employee);
         exportRequest.setExportFormat(exportRequestDTO.exportFormat());
         exportRequest.setSelectedEntities(exportRequestDTO.selectedEntities());
         exportRequest.setAppliedFilters(exportRequestDTO.appliedFilters());
         exportRequest.setFileName(exportRequestDTO.fileName());
+
         return exportRequest;
     }
 
@@ -71,9 +72,12 @@ public class ExportRequestService {
                 exportRequest.getId(),
                 exportRequest.getEmployee().getId(),
                 exportRequest.getExportFormat(),
+                exportRequest.getExportCreation().toString(),
                 exportRequest.getSelectedEntities(),
                 exportRequest.getAppliedFilters(),
-                exportRequest.getFileName()
+                exportRequest.getFileName(),
+                exportRequest.getStatus(),
+                exportRequest.getFileSize()
         );
     }
 }
