@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,10 +39,13 @@ class ExportRequestServiceTest {
         ExportRequest exportRequest1 = new ExportRequest();
         exportRequest1.setId(1);
         exportRequest1.setEmployee(employee1);
+        exportRequest1.setExportCreation(LocalDateTime.now());
 
         ExportRequest exportRequest2 = new ExportRequest();
         exportRequest2.setId(2);
         exportRequest2.setEmployee(employee2);
+        exportRequest2.setExportCreation(LocalDateTime.now());
+
         when(exportRequestRepository.findAll()).thenReturn(List.of(exportRequest1, exportRequest2));
 
         ExportRequestDTO[] result = exportRequestService.getAllExportRequests();

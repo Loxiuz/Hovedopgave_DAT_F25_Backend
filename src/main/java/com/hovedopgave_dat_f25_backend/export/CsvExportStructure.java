@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.function.Function;
 
 public record CsvExportStructure<E>(List<E> data, List<String> columnHeaderStructure,
-                                    Function<E, List<String>> rowMapper) {
+                                    Function<E, List<String>> rowMapper) implements ExportStructure {
 
-    public String buildColumnData() {
+    public String buildData() {
         StringBuilder builder = new StringBuilder();
 
         builder.append(String.join(",", columnHeaderStructure)).append("\n");

@@ -57,7 +57,7 @@ class CrewMemberAssignmentServiceTest {
     }
 
     @Test
-    void getFilteredCrewMembers() {
+    void getFilteredCrewMemberAssignments() {
         CrewMember crewMember1 = new CrewMember();
         crewMember1.setId(1);
         CrewMember crewMember2 = new CrewMember();
@@ -74,23 +74,20 @@ class CrewMemberAssignmentServiceTest {
         crewMemberAssignment2.setCrewMember(crewMember2);
         crewMemberAssignment2.setFlight(flight2);
 
-        when(crewMemberService.getAllCrewMembers()).thenReturn(List.of(
-                new CrewMemberDTO("1"),
-                new CrewMemberDTO("2")
-        ));
         when(crewMemberAssignmentRepository.findAll()).thenReturn(List.of(crewMemberAssignment1, crewMemberAssignment2));
 
         JsonNode filter = mock(JsonNode.class);
-        when(filter.get("crew_member")).thenReturn(mock(JsonNode.class));
-        when(filter.get("crew_member").get("field")).thenReturn(mock(JsonNode.class));
-        when(filter.get("crew_member").get("value")).thenReturn(mock(JsonNode.class));
+        when(filter.get("crew_member_assignment")).thenReturn(mock(JsonNode.class));
+        when(filter.get("crew_member_assignment").get("field")).thenReturn(mock(JsonNode.class));
+        when(filter.get("crew_member_assignment").get("value")).thenReturn(mock(JsonNode.class));
 
-        when(filter.get("crew_member").get("field").asText()).thenReturn("flightNumber");
-        when(filter.get("crew_member").get("value").asText()).thenReturn("FL123");
+        when(filter.get("crew_member_assignment").get("field").asText()).thenReturn("flightNumber");
+        when(filter.get("crew_member_assignment").get("value").asText()).thenReturn("FL123");
 
-        List<CrewMemberDTO> filteredCrewMembers = crewMemberAssignmentService.getFilteredCrewMembers(List.of(filter));
+        List<CrewMemberAssignmentDTO> filteredCrewMembers = crewMemberAssignmentService.getFilteredCrewMemberAssignments(List.of(filter));
 
-        assertEquals(2, filteredCrewMembers.size());
-        assertEquals("1", filteredCrewMembers.get(0).id());
+        assertEquals(1, filteredCrewMembers.size());
+        assertEquals("1", filteredCrewMembers.get(0).crewMemberId());
+        assertEquals("FL123", filteredCrewMembers.get(0).flightNumber());
     }
 }

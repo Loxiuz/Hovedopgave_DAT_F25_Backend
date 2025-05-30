@@ -5,7 +5,6 @@ import com.hovedopgave_dat_f25_backend.crew_member.CrewMemberDTO;
 import com.hovedopgave_dat_f25_backend.crew_member.CrewMemberService;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 @Service
@@ -25,45 +24,41 @@ public class CrewMemberAssignmentService {
         ).collect(Collectors.toList());
     }
 
-    public List<CrewMemberDTO> getFilteredCrewMembers(List<JsonNode> filters) {
+    public List<CrewMemberAssignmentDTO> getFilteredCrewMemberAssignments(List<JsonNode> filters) {
         System.out.println("Filters: " + filters);
-        List<CrewMemberDTO> crewMembers = crewMemberService.getAllCrewMembers();
         List<CrewMemberAssignmentDTO> crewMemberAssignments = getAllCrewMemberAssignments();
 
         for(JsonNode filter : filters) {
-            JsonNode field = filter.get("crew_member").get("field");
-            JsonNode value = filter.get("crew_member").get("value");
+            JsonNode field = filter.get("crew_member_assignment").get("field");
+            JsonNode value = filter.get("crew_member_assignment").get("value");
 
             if(field != null && value != null) {
                 String fieldStr = field.asText();
                 String valueStr = value.asText();
                 System.out.println("Field: " + fieldStr + ", Value: " + valueStr);
-
-                if (filter.has("crew_member")) {
-                    if (fieldStr.equals("flightNumber")) {
-                        crewMembers = crewMembers.stream().filter(
-                                crewMember -> crewMemberAssignments.stream()
-                                        .anyMatch(assignment -> assignment.flightNumber().equalsIgnoreCase(valueStr)
-                                                && assignment.crewMemberId().equals(crewMember.id()))
-                        ).collect(Collectors.toList());
+                    if(fieldStr.equals("crewMemberId")) {
+                        crewMemberAssignments = crewMemberAssignments.stream()
+                                .filter(assignment -> assignment.crewMemberId().equalsIgnoreCase(valueStr))
+                                .toList();
                     }
                     if (fieldStr.equals("role")) {
-                        crewMembers = crewMembers.stream().filter(
-                                crewMember -> crewMemberAssignments.stream()
-                                        .anyMatch(assignment -> assignment.role().equalsIgnoreCase(valueStr)
-                                                && assignment.crewMemberId().equals(crewMember.id()))
-                        ).collect(Collectors.toList());
+                        crewMemberAssignments = crewMemberAssignments.stream()
+                                .filter(assignment -> assignment.role().equalsIgnoreCase(valueStr))
+                                .toList();
                     }
-                }
+                    if (fieldStr.equals("flightNumber")) {
+                        crewMemberAssignments = crewMemberAssignments.stream()
+                                .filter(assignment -> assignment.flightNumber().equalsIgnoreCase(valueStr))
+                                .toList();
+                    }
             }
         }
 
-        return crewMembers;
+        return crewMemberAssignments;
     }
 
     private CrewMemberAssignmentDTO toDto(CrewMemberAssignment crewMemberAssignment) {
         return new CrewMemberAssignmentDTO(
-                crewMemberAssignment.getId(),
                 String.valueOf(crewMemberAssignment.getCrewMember().getId()),
                 crewMemberAssignment.getFlight().getFlightNumber(),
                 crewMemberAssignment.getRole()

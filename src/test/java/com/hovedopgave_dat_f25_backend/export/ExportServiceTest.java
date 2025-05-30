@@ -1,5 +1,6 @@
 package com.hovedopgave_dat_f25_backend.export;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.hovedopgave_dat_f25_backend.airport.Airport;
 import com.hovedopgave_dat_f25_backend.booking.BookingRepository;
 import com.hovedopgave_dat_f25_backend.booking.BookingService;
@@ -24,13 +25,10 @@ import org.mockito.Mock;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @ExtendWith(MockitoExtension.class)
 class ExportServiceTest {
@@ -59,40 +57,47 @@ class ExportServiceTest {
 
     ExportService exportService;
 
+    Airport airport = new Airport();
+    Airport airport2 = new Airport();
+    Flight flight = new Flight();
+    String departureTime = LocalDateTime.now().toString();
+    String arrivalTime = LocalDateTime.now().plusHours(2).toString();
+    Employee employee = new Employee();
+    Passenger passenger = new Passenger();
+    LocalDateTime birthdate = LocalDateTime.now();
+    List<JsonNode> filters = List.of(new JsonNode[]{mock(JsonNode.class)});
+
     @BeforeEach
     void setUp() {
         exportService = new ExportService(flightService, passengerService, crewMemberService, bookingService, crewMemberAssignmentService);
-    }
 
-    @Test
-    void testProcessExportRequestOneSelectedEntity() {
-
-        Airport airport = new Airport();
         airport.setId(1);
-        Airport airport2 = new Airport();
         airport2.setId(2);
 
-        Flight flight = new Flight();
         flight.setId(1);
         flight.setFlightNumber("Test Flight");
         flight.setAirportOrigin(airport);
         flight.setAirportDestination(airport2);
-
-        String departureTime = LocalDateTime.now().toString();
-        String arrivalTime = LocalDateTime.now().plusHours(2).toString();
-
         flight.setDepartureTime(departureTime);
         flight.setArrivalTime(arrivalTime);
 
-        when(flightRepository.findAll()).thenReturn(List.of(flight));
+        passenger.setId(1);
+        passenger.setName("John Doe");
+        passenger.setNationality("nationality");
+        passenger.setBirthdate(birthdate);
 
-        Employee employee = new Employee();
         employee.setId(1);
+    }
 
+    @Test
+    void testProcessExportRequestOneSelectedEntityWithCsv() {
         ExportRequest exportRequest = new ExportRequest();
         exportRequest.setEmployee(employee);
         exportRequest.setSelectedEntities("flight");
         exportRequest.setExportFormat("csv");
+        exportRequest.setAppliedFilters(filters);
+
+        when(flightRepository.findAll()).thenReturn(List.of(flight));
 
         byte[] result = exportService.processExportRequest(exportRequest);
         String expected = "=== FLIGHT ===\n" +
@@ -102,45 +107,80 @@ class ExportServiceTest {
     }
 
     @Test
-    void testProcessExportRequestMultipleSelectedEntities() {
-        Airport airport = new Airport();
-        airport.setId(1);
-        Airport airport2 = new Airport();
-        airport2.setId(2);
-
-        Flight flight = new Flight();
-        flight.setId(1);
-        flight.setFlightNumber("Test Flight");
-        flight.setAirportOrigin(airport);
-        flight.setAirportDestination(airport2);
-
-        String departureTime = LocalDateTime.now().toString();
-        String arrivalTime = LocalDateTime.now().plusHours(2).toString();
-        flight.setDepartureTime(departureTime);
-        flight.setArrivalTime(arrivalTime);
-
-        Passenger passenger = new Passenger();
-        passenger.setId(1);
-        passenger.setName("John Doe");
-        passenger.setNationality("nationality");
-
-        LocalDateTime birthdate = LocalDateTime.now();
-        passenger.setBirthdate(birthdate);
-
-        when(flightRepository.findAll()).thenReturn(List.of(flight));
-        when(passengerRepository.findAll()).thenReturn(List.of(passenger));
-
+    void testProcessExportRequestMultipleSelectedEntitiesWithCsv() {
         ExportRequest exportRequest = new ExportRequest();
         exportRequest.setSelectedEntities("flight,passenger");
         exportRequest.setExportFormat("csv");
+        exportRequest.setAppliedFilters(filters);
+
+        when(flightRepository.findAll()).thenReturn(List.of(flight));
+        when(passengerRepository.findAll()).thenReturn(List.of(passenger));
 
         byte[] result = exportService.processExportRequest(exportRequest);
         String expected = "=== FLIGHT ===\n" +
                 "flightNumber,departure,arrival\n" +
                 "Test Flight," + departureTime + "," + arrivalTime + "\n\n" +
                 "=== PASSENGER ===\n" +
-                "birthdate,name,nationality\n" +
-                 birthdate + ",John Doe,nationality\n\n";
+                "passengerId,nationality\n" +
+                 passenger.getId() + "," + passenger.getNationality() + "\n\n";
+        assertEquals(expected, new String(result));
+    }
+
+    @Test
+    void testProcessExportRequestOneSelectedEntityWithJson() {
+        ExportRequest exportRequest = new ExportRequest();
+        exportRequest.setSelectedEntities("flight");
+        exportRequest.setExportFormat("json");
+        exportRequest.setAppliedFilters(filters);
+
+        when(flightRepository.findAll()).thenReturn(List.of(flight));
+
+        byte[] result = exportService.processExportRequest(exportRequest);
+        String expected = "[\n" +
+                "    {\n" +
+                "        \"flight\": [\n" +
+                "            {\n" +
+                "                \"flightNumber\": \"Test Flight\",\n" +
+                "                \"departure\": \"" + departureTime + "\",\n" +
+                "                \"arrival\": \"" + arrivalTime + "\"\n" +
+                "            }\n" +
+                "        ]\n" +
+                "    }\n" +
+                "]";
+        assertEquals(expected, new String(result));
+    }
+
+    @Test
+    void testProcessExportRequestMultipleSelectedEntitiesWithJson() {
+        ExportRequest exportRequest = new ExportRequest();
+        exportRequest.setSelectedEntities("flight,passenger");
+        exportRequest.setExportFormat("json");
+        exportRequest.setAppliedFilters(filters);
+
+        when(flightRepository.findAll()).thenReturn(List.of(flight));
+        when(passengerRepository.findAll()).thenReturn(List.of(passenger));
+
+        byte[] result = exportService.processExportRequest(exportRequest);
+        String expected = "[\n" +
+                "    {\n" +
+                "        \"flight\": [\n" +
+                "            {\n" +
+                "                \"flightNumber\": \"Test Flight\",\n" +
+                "                \"departure\": \"" + departureTime + "\",\n" +
+                "                \"arrival\": \"" + arrivalTime + "\"\n" +
+                "            }\n"+
+                "        ]\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"passenger\": [\n" +
+                "            {\n" +
+                "                \"passengerId\": \"" + passenger.getId() + "\",\n" +
+                "                \"nationality\": \"" + passenger.getNationality() + "\"\n" +
+                "            }\n" +
+                "        ]\n" +
+                "    }\n" +
+                "]";
+
         assertEquals(expected, new String(result));
     }
 
@@ -150,9 +190,7 @@ class ExportServiceTest {
         exportRequest.setSelectedEntities("");
         exportRequest.setExportFormat("csv");
 
-       assertThrows(IllegalArgumentException.class, () -> {
-            exportService.processExportRequest(exportRequest);
-        });
+       assertThrows(IllegalArgumentException.class, () -> exportService.processExportRequest(exportRequest));
     }
 
     @Test

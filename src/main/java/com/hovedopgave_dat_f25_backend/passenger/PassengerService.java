@@ -17,7 +17,8 @@ public class PassengerService {
     public List<PassengerDTO> getAllPassengers() {
         return passengerRepository.findAll().stream().map(
                 passenger -> new PassengerDTO(
-                        String.valueOf(passenger.getId())
+                        String.valueOf(passenger.getId()),
+                        passenger.getNationality()
                 )
         ).toList();
     }
