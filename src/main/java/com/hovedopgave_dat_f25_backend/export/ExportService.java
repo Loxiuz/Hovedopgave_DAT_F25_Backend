@@ -21,10 +21,10 @@ import java.util.List;
 public class ExportService {
 
     private final CrewMemberAssignmentService crewMemberAssignmentService;
-    FlightService flightService;
-    PassengerService passengerService;
-    CrewMemberService crewMemberService;
-    BookingService bookingService;
+    private final FlightService flightService;
+    private final PassengerService passengerService;
+    private final CrewMemberService crewMemberService;
+    private final BookingService bookingService;
 
     public ExportService(FlightService flightService, PassengerService passengerService, CrewMemberService crewMemberService, BookingService bookingService, CrewMemberAssignmentService crewMemberAssignmentService) {
         this.flightService = flightService;

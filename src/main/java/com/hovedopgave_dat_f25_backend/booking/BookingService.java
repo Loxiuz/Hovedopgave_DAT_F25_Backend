@@ -3,6 +3,7 @@ package com.hovedopgave_dat_f25_backend.booking;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +24,7 @@ public class BookingService {
 
     public List<BookingDTO> getFilteredBookings(List<JsonNode> filters) {
         System.out.println("Filters: " + filters);
-        List<BookingDTO> bookings = getBookings();
+        List<Booking> bookings = new ArrayList<>();
 
         for(JsonNode filter : filters) {
             JsonNode field = filter.get("booking").get("field");
@@ -33,26 +34,23 @@ public class BookingService {
                 String fieldStr = field.asText();
                 String valueStr = value.asText();
                 System.out.println("Field: " + fieldStr + ", Value: " + valueStr);
-
-                if (fieldStr.equals("flightNumber")) {
-                    bookings = bookings.stream().filter(
-                                    booking -> booking.flightNumber().equalsIgnoreCase(valueStr))
-                            .collect(Collectors.toList());
-                }
-                if (fieldStr.equals("status")) {
-                    bookings = bookings.stream()
-                            .filter(booking -> booking.status().equalsIgnoreCase(valueStr))
-                            .collect(Collectors.toList());
-                }
-                if(fieldStr.equals("passengerId")) {
-                    bookings = bookings.stream()
-                            .filter(booking -> booking.passengerId().equalsIgnoreCase(valueStr))
-                            .collect(Collectors.toList());
-                }
+                bookings = switch (fieldStr) {
+                    case "passengerId" -> bookingRepository.findAllByPassengerId(Integer.parseInt(valueStr));
+                    case "flightNumber" -> bookingRepository.findAllByFlightNumber(valueStr);
+                    case "bookingNumber" -> bookingRepository.findAllByBookingNumber(valueStr);
+                    case "seatNumber" -> bookingRepository.findAllBySeatNumber(valueStr);
+                    case "status" -> bookingRepository.findAllByStatus(valueStr);
+                    default -> bookings;
+                };
             }
         }
+        if (bookings.isEmpty()) {
+            bookings = bookingRepository.findAll();
+        }
 
-        return bookings;
+        return bookings.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 
     private BookingDTO toDto(Booking booking) {

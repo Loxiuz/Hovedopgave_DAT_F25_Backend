@@ -3,7 +3,7 @@ package com.hovedopgave_dat_f25_backend.flight;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 public class FlightService {
@@ -15,21 +15,14 @@ public class FlightService {
     }
 
     public List<FlightDTO> getAllFlights() {
-    return flightRepository.findAll()
-            .stream()
-            .map(flight -> new FlightDTO(
-                    flight.getId(),
-                    flight.getAirportOrigin(),
-                    flight.getAirportDestination(),
-                    flight.getFlightNumber(),
-                    flight.getDepartureTime(),
-                    flight.getArrivalTime()))
+    return flightRepository.findAll().stream()
+            .map(this::toDto)
             .toList();
     }
 
     public List<FlightDTO> getFilteredFlights(List<JsonNode> filters) {
         System.out.println("Filters: " + filters);
-        List<FlightDTO> flights = getAllFlights();
+        List<Flight> flights = new ArrayList<>();
 
         for (JsonNode filter : filters) {
             JsonNode field = filter.get("flight").get("field");
@@ -38,26 +31,32 @@ public class FlightService {
             if (field != null && value != null) {
                 String fieldStr = field.asText();
                 String valueStr = value.asText();
-                System.out.println("Field: " + fieldStr + ", Value: " + valueStr);
 
-                if (fieldStr.equals("flightNumber")) {
-                    flights = flights.stream()
-                            .filter(flight -> flight.flightNumber().equalsIgnoreCase(valueStr))
-                            .toList();
-                }
-                if (fieldStr.equals("departureTime")) {
-                    flights = flights.stream()
-                            .filter(flight -> flight.departureTime().equalsIgnoreCase(valueStr))
-                            .toList();
-                }
-                if (fieldStr.equals("arrivalTime")) {
-                    flights = flights.stream()
-                            .filter(flight -> flight.arrivalTime().equalsIgnoreCase(valueStr))
-                            .toList();
-                }
+                flights = switch (fieldStr) {
+                    case "flightNumber" -> flightRepository.findFlightsByFlightNumber(valueStr);
+                    case "departureTime" -> flightRepository.findFlightsByDepartureTime(valueStr);
+                    case "arrivalTime" -> flightRepository.findFlightsByArrivalTime(valueStr);
+                    default -> flights;
+                };
             }
         }
+        if (flights.isEmpty()) {
+            flights = flightRepository.findAll();
+        }
 
-        return flights;
+        return flights.stream()
+                .map(this::toDto)
+                .toList();
+    }
+
+    private FlightDTO toDto(Flight flight) {
+        return new FlightDTO(
+                flight.getId(),
+                flight.getAirportOrigin(),
+                flight.getAirportDestination(),
+                flight.getFlightNumber(),
+                flight.getDepartureTime(),
+                flight.getArrivalTime()
+        );
     }
 }

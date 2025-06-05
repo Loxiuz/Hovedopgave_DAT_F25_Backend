@@ -1,21 +1,18 @@
 package com.hovedopgave_dat_f25_backend.crew_member_assignment;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.hovedopgave_dat_f25_backend.crew_member.CrewMemberDTO;
-import com.hovedopgave_dat_f25_backend.crew_member.CrewMemberService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 @Service
 public class CrewMemberAssignmentService {
 
     CrewMemberAssignmentRepository crewMemberAssignmentRepository;
-    CrewMemberService crewMemberService;
 
-    public CrewMemberAssignmentService(CrewMemberAssignmentRepository crewMemberAssignmentRepository, CrewMemberService crewMemberService) {
+    public CrewMemberAssignmentService(CrewMemberAssignmentRepository crewMemberAssignmentRepository) {
         this.crewMemberAssignmentRepository = crewMemberAssignmentRepository;
-        this.crewMemberService = crewMemberService;
     }
 
     public List<CrewMemberAssignmentDTO> getAllCrewMemberAssignments() {
@@ -26,7 +23,7 @@ public class CrewMemberAssignmentService {
 
     public List<CrewMemberAssignmentDTO> getFilteredCrewMemberAssignments(List<JsonNode> filters) {
         System.out.println("Filters: " + filters);
-        List<CrewMemberAssignmentDTO> crewMemberAssignments = getAllCrewMemberAssignments();
+        List<CrewMemberAssignment> crewMemberAssignments = new ArrayList<>();
 
         for(JsonNode filter : filters) {
             JsonNode field = filter.get("crew_member_assignment").get("field");
@@ -36,25 +33,22 @@ public class CrewMemberAssignmentService {
                 String fieldStr = field.asText();
                 String valueStr = value.asText();
                 System.out.println("Field: " + fieldStr + ", Value: " + valueStr);
-                    if(fieldStr.equals("crewMemberId")) {
-                        crewMemberAssignments = crewMemberAssignments.stream()
-                                .filter(assignment -> assignment.crewMemberId().equalsIgnoreCase(valueStr))
-                                .toList();
-                    }
-                    if (fieldStr.equals("role")) {
-                        crewMemberAssignments = crewMemberAssignments.stream()
-                                .filter(assignment -> assignment.role().equalsIgnoreCase(valueStr))
-                                .toList();
-                    }
-                    if (fieldStr.equals("flightNumber")) {
-                        crewMemberAssignments = crewMemberAssignments.stream()
-                                .filter(assignment -> assignment.flightNumber().equalsIgnoreCase(valueStr))
-                                .toList();
-                    }
+
+                crewMemberAssignments = switch (fieldStr) {
+                    case "crewMemberId" -> crewMemberAssignmentRepository.findAllByCrewMemberId(Integer.parseInt(valueStr));
+                    case "flightNumber" -> crewMemberAssignmentRepository.findAllByFlightNumber(valueStr);
+                    case "role" -> crewMemberAssignmentRepository.findAllByRole(valueStr);
+                    default -> crewMemberAssignments;
+                };
             }
         }
+        if (crewMemberAssignments.isEmpty()) {
+            crewMemberAssignments = crewMemberAssignmentRepository.findAll();
+        }
 
-        return crewMemberAssignments;
+        return crewMemberAssignments.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 
     private CrewMemberAssignmentDTO toDto(CrewMemberAssignment crewMemberAssignment) {

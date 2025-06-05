@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
 @SpringBootTest
 @Transactional
 public class FlightRepositoryTest {
@@ -37,7 +39,7 @@ public class FlightRepositoryTest {
         flight.setFlightNumber("123");
         flightRepository.save(flight);
 
-        Flight[] flights = flightRepository.findFlightByAirportDestination(destinationAirport);
-        Assertions.assertEquals(1, flights.length);
+        List<Flight> flights = flightRepository.findFlightByAirportDestination(destinationAirport);
+        Assertions.assertEquals(1, flights.size());
     }
 }
