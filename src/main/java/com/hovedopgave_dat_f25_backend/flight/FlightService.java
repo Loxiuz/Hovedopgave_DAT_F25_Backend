@@ -36,6 +36,8 @@ public class FlightService {
                     case "flightNumber" -> flightRepository.findFlightsByFlightNumber(valueStr);
                     case "departureTime" -> flightRepository.findFlightsByDepartureTime(valueStr);
                     case "arrivalTime" -> flightRepository.findFlightsByArrivalTime(valueStr);
+                    case "airportOrigin" -> flightRepository.findFlightsByAirportOrigin(valueStr);
+                    case "airportDestination" -> flightRepository.findFlightsByAirportDestination(valueStr);
                     default -> flights;
                 };
             }
