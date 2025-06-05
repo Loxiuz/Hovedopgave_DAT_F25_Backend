@@ -8,8 +8,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -42,10 +44,8 @@ class CrewMemberServiceTest {
     void testGetFilteredCrewMembers() {
         CrewMember crewMember1 = new CrewMember();
         crewMember1.setId(1);
-        CrewMember crewMember2 = new CrewMember();
-        crewMember2.setId(2);
 
-        when(crewMemberRepository.findAll()).thenReturn(List.of(crewMember1, crewMember2));
+        when(crewMemberRepository.findById(anyInt())).thenReturn(Optional.of(crewMember1));
 
         JsonNode filter = mock(JsonNode.class);
         when(filter.get("crew_member")).thenReturn(mock(JsonNode.class));

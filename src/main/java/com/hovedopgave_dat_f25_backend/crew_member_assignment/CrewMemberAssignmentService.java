@@ -42,7 +42,7 @@ public class CrewMemberAssignmentService {
                 };
             }
         }
-        if (crewMemberAssignments.isEmpty()) {
+        if (crewMemberAssignments.isEmpty() && filters.isEmpty()) {
             crewMemberAssignments = crewMemberAssignmentRepository.findAll();
         }
 

@@ -40,7 +40,7 @@ public class FlightService {
                 };
             }
         }
-        if (flights.isEmpty()) {
+        if (flights.isEmpty() && filters.isEmpty()) {
             flights = flightRepository.findAll();
         }
 

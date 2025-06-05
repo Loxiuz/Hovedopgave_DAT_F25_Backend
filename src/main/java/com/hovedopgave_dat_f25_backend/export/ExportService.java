@@ -181,7 +181,7 @@ public class ExportService {
             case "crew_member_assignment" -> {
                 List<CrewMemberAssignmentDTO> crewMemberAssignments = crewMemberAssignmentService.getFilteredCrewMemberAssignments(
                         appliedFilters.stream().filter(
-                                filter -> filter.has("crew_member")
+                                filter -> filter.has("crew_member_assignment")
                         ).toList());
                 if (exportFormat.equalsIgnoreCase("csv")) {
                     yield new CsvExportStructure<>(

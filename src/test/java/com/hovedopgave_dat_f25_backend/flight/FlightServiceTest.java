@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -43,11 +44,7 @@ class FlightServiceTest {
         flight1.setId(1);
         flight1.setFlightNumber("FL123");
 
-        Flight flight2 = new Flight();
-        flight2.setId(2);
-        flight2.setFlightNumber("FL456");
-
-        when(flightRepository.findAll()).thenReturn(List.of(flight1, flight2));
+        when(flightRepository.findFlightsByFlightNumber(anyString())).thenReturn(List.of(flight1));
 
         JsonNode filter = mock(JsonNode.class);
         when(filter.get("flight")).thenReturn(mock(JsonNode.class));

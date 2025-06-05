@@ -44,7 +44,7 @@ public class BookingService {
                 };
             }
         }
-        if (bookings.isEmpty()) {
+        if (bookings.isEmpty() && filters.isEmpty()) {
             bookings = bookingRepository.findAll();
         }
 

@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface CrewMemberAssignmentRepository extends JpaRepository<CrewMemberAssignment, Integer> {
 
+    @Query("SELECT c FROM CrewMemberAssignment c WHERE c.crewMember.id = ?1")
     List<CrewMemberAssignment> findAllByCrewMemberId(int crewMemberId);
     @Query("SELECT c FROM CrewMemberAssignment c WHERE c.flight.flightNumber = ?1")
     List<CrewMemberAssignment> findAllByFlightNumber(String flightNumber);

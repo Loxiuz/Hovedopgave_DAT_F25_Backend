@@ -34,7 +34,7 @@ public class CrewMemberService {
                 String valueStr = value.asText();
 
                 crewMembers = switch (fieldStr) {
-                    case "id" -> crewMemberRepository.findAllById(Integer.valueOf(valueStr));
+                    case "id" -> crewMemberRepository.findById(Integer.valueOf(valueStr)).stream().toList();
                     case "name" -> crewMemberRepository.findAllByName(valueStr);
                     case "email" -> crewMemberRepository.findAllByEmail(valueStr);
                     default -> crewMembers;
@@ -43,7 +43,7 @@ public class CrewMemberService {
             }
 
         }
-        if (crewMembers.isEmpty()) {
+        if (crewMembers.isEmpty() && filters.isEmpty()) {
             crewMembers = crewMemberRepository.findAll();
         }
         return crewMembers.stream()
