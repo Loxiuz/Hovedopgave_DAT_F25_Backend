@@ -12,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -74,7 +74,8 @@ class BookingServiceTest {
         booking1.setPassenger(passenger1);
         booking1.setStatus("CONFIRMED");
 
-        when(bookingRepository.findAllByFlightNumber(anyString())).thenReturn(List.of(booking1));
+        when(bookingRepository.findAllByFields(any(), any(), any(), any(), any()))
+                .thenReturn(List.of(booking1));
 
         JsonNode filter = mock(JsonNode.class);
         when(filter.get("booking")).thenReturn(mock(JsonNode.class));

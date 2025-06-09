@@ -23,8 +23,4 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             @Param("seatNumber") String seatNumber,
             @Param("status") String status
     );
-
-    @Query("SELECT b FROM Booking b WHERE b.flight.flightNumber = ?1")
-    List<Booking> findAllByFlightNumber(String flightNumber);
-
 }

@@ -68,7 +68,8 @@ class CrewMemberAssignmentServiceTest {
         crewMemberAssignment2.setCrewMember(crewMember2);
         crewMemberAssignment2.setFlight(flight1);
 
-        when(crewMemberAssignmentRepository.findAllByFlightNumber(anyString())).thenReturn(List.of(crewMemberAssignment1, crewMemberAssignment2));
+        when(crewMemberAssignmentRepository.findAllByFields(any(), any(), any()))
+                .thenReturn(List.of(crewMemberAssignment1, crewMemberAssignment2));
 
         JsonNode filter = mock(JsonNode.class);
         when(filter.get("crew_member_assignment")).thenReturn(mock(JsonNode.class));
