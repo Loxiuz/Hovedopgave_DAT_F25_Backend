@@ -22,8 +22,9 @@ public class CrewMemberService {
     }
 
     public List<CrewMemberDTO> getFilteredCrewMembers(List<JsonNode> filters) {
-        System.out.println("Filters: " + filters);
-        List<CrewMember> crewMembers = new ArrayList<>();
+        String id = null;
+        String name = null;
+        String email = null;
 
         for (JsonNode filter : filters) {
             JsonNode field = filter.get("crew_member").get("field");
@@ -33,18 +34,21 @@ public class CrewMemberService {
                 String fieldStr = field.asText();
                 String valueStr = value.asText();
 
-                crewMembers = switch (fieldStr) {
-                    case "id" -> crewMemberRepository.findById(Integer.valueOf(valueStr)).stream().toList();
-                    case "name" -> crewMemberRepository.findAllByName(valueStr);
-                    case "email" -> crewMemberRepository.findAllByEmail(valueStr);
-                    default -> crewMembers;
-                };
+                switch (fieldStr) {
+                    case "id" -> id = valueStr;
+                    case "name" -> name = valueStr;
+                    case "email" -> email = valueStr;
+                }
 
             }
 
         }
-        if (crewMembers.isEmpty() && filters.isEmpty()) {
+        List<CrewMember> crewMembers = new ArrayList<>();
+
+        if (filters.isEmpty()) {
             crewMembers = crewMemberRepository.findAll();
+        } else {
+            crewMembers = crewMemberRepository.findAllByFields(id, name, email);
         }
         return crewMembers.stream()
                 .map(this::toDto)

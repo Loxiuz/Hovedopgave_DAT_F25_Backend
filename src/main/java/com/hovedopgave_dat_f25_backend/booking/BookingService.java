@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,29 +25,38 @@ public class BookingService {
     }
 
     public List<BookingDTO> getFilteredBookings(List<JsonNode> filters) {
-        System.out.println("Filters: " + filters);
-        List<Booking> bookings = new ArrayList<>();
+        String passengerId = null;
+        String flightNumber = null;
+        String bookingNumber = null;
+        String seatNumber = null;
+        String status = null;
 
-        for(JsonNode filter : filters) {
-            JsonNode field = filter.get("booking").get("field");
-            JsonNode value = filter.get("booking").get("value");
+        for (JsonNode filter : filters) {
+            JsonNode fieldNode = filter.get("booking").get("field");
+            JsonNode valueNode = filter.get("booking").get("value");
 
-            if(field != null && value != null) {
-                String fieldStr = field.asText();
-                String valueStr = value.asText();
-                System.out.println("Field: " + fieldStr + ", Value: " + valueStr);
-                bookings = switch (fieldStr) {
-                    case "passengerId" -> bookingRepository.findAllByPassengerId(Integer.parseInt(valueStr));
-                    case "flightNumber" -> bookingRepository.findAllByFlightNumber(valueStr);
-                    case "bookingNumber" -> bookingRepository.findAllByBookingNumber(valueStr);
-                    case "seatNumber" -> bookingRepository.findAllBySeatNumber(valueStr);
-                    case "status" -> bookingRepository.findAllByStatus(valueStr);
-                    default -> bookings;
-                };
+            if (fieldNode != null && valueNode != null) {
+                String field = fieldNode.asText();
+                String value = valueNode.asText();
+
+                switch (field) {
+                    case "passengerId" -> passengerId = value;
+                    case "flightNumber" -> flightNumber = value;
+                    case "bookingNumber" -> bookingNumber = value;
+                    case "seatNumber" -> seatNumber = value;
+                    case "status" -> status = value;
+                }
             }
         }
-        if (bookings.isEmpty() && filters.isEmpty()) {
+
+        List<Booking> bookings;
+
+        if (filters.isEmpty()) {
             bookings = bookingRepository.findAll();
+        } else {
+            bookings = bookingRepository.findAllByFields(
+                    passengerId, flightNumber, bookingNumber, seatNumber, status
+            );
         }
 
         return bookings.stream()

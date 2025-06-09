@@ -22,8 +22,9 @@ public class CrewMemberAssignmentService {
     }
 
     public List<CrewMemberAssignmentDTO> getFilteredCrewMemberAssignments(List<JsonNode> filters) {
-        System.out.println("Filters: " + filters);
-        List<CrewMemberAssignment> crewMemberAssignments = new ArrayList<>();
+        String crewMemberId = null;
+        String flightNumber = null;
+        String role = null;
 
         for(JsonNode filter : filters) {
             JsonNode field = filter.get("crew_member_assignment").get("field");
@@ -34,16 +35,19 @@ public class CrewMemberAssignmentService {
                 String valueStr = value.asText();
                 System.out.println("Field: " + fieldStr + ", Value: " + valueStr);
 
-                crewMemberAssignments = switch (fieldStr) {
-                    case "crewMemberId" -> crewMemberAssignmentRepository.findAllByCrewMemberId(Integer.parseInt(valueStr));
-                    case "flightNumber" -> crewMemberAssignmentRepository.findAllByFlightNumber(valueStr);
-                    case "role" -> crewMemberAssignmentRepository.findAllByRole(valueStr);
-                    default -> crewMemberAssignments;
-                };
+                switch (fieldStr) {
+                    case "crewMemberId" -> crewMemberId = valueStr;
+                    case "flightNumber" -> flightNumber = valueStr;
+                    case "role" -> role = valueStr;
+                }
             }
         }
-        if (crewMemberAssignments.isEmpty() && filters.isEmpty()) {
+        List<CrewMemberAssignment> crewMemberAssignments;
+
+        if (filters.isEmpty()) {
             crewMemberAssignments = crewMemberAssignmentRepository.findAll();
+        } else {
+            crewMemberAssignments = crewMemberAssignmentRepository.findAllByFields(crewMemberId, flightNumber, role);
         }
 
         return crewMemberAssignments.stream()

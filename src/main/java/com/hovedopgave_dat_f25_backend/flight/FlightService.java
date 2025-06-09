@@ -21,8 +21,11 @@ public class FlightService {
     }
 
     public List<FlightDTO> getFilteredFlights(List<JsonNode> filters) {
-        System.out.println("Filters: " + filters);
-        List<Flight> flights = new ArrayList<>();
+        String flightNumber = null;
+        String departureTime = null;
+        String arrivalTime = null;
+        String airportOrigin = null;
+        String airportDestination = null;
 
         for (JsonNode filter : filters) {
             JsonNode field = filter.get("flight").get("field");
@@ -32,18 +35,23 @@ public class FlightService {
                 String fieldStr = field.asText();
                 String valueStr = value.asText();
 
-                flights = switch (fieldStr) {
-                    case "flightNumber" -> flightRepository.findFlightsByFlightNumber(valueStr);
-                    case "departureTime" -> flightRepository.findFlightsByDepartureTime(valueStr);
-                    case "arrivalTime" -> flightRepository.findFlightsByArrivalTime(valueStr);
-                    case "airportOrigin" -> flightRepository.findFlightsByAirportOrigin(valueStr);
-                    case "airportDestination" -> flightRepository.findFlightsByAirportDestination(valueStr);
-                    default -> flights;
-                };
+                switch (fieldStr) {
+                    case "flightNumber" -> flightNumber = valueStr;
+                    case "departureTime" -> departureTime = valueStr;
+                    case "arrivalTime" -> arrivalTime = valueStr;
+                    case "airportOrigin" -> airportOrigin = valueStr;
+                    case "airportDestination" -> airportDestination = valueStr;
+                }
             }
         }
-        if (flights.isEmpty() && filters.isEmpty()) {
+        List<Flight> flights;
+
+        if (filters.isEmpty()) {
             flights = flightRepository.findAll();
+        } else {
+            flights = flightRepository.findAllByFields(
+                    flightNumber, departureTime, arrivalTime, airportOrigin, airportDestination
+            );
         }
 
         return flights.stream()
