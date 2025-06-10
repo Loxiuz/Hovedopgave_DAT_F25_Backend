@@ -103,9 +103,11 @@ public class ExportService {
                 if(exportFormat.equalsIgnoreCase("csv")){
                     yield new CsvExportStructure<>(
                             flights,
-                            List.of("flightNumber", "departure", "arrival"),
+                            List.of("flightNumber", "airportOriginId", "airportDestinationId", "departure", "arrival"),
                             flightData -> List.of(
                                     flightData.flightNumber(),
+                                    String.valueOf(flightData.airportOriginId()),
+                                    String.valueOf(flightData.airportDestinationId()),
                                     flightData.departureTime(),
                                     flightData.arrivalTime()
                             )
@@ -113,9 +115,11 @@ public class ExportService {
                 } else if (exportFormat.equalsIgnoreCase("json")) {
                     yield new JsonExportStructure<>(
                             flights,
-                            List.of("flightNumber", "departure", "arrival"),
+                            List.of("flightNumber", "airportOriginId", "airportDestinationId", "departure", "arrival"),
                             flightData -> List.of(
                                     flightData.flightNumber(),
+                                    String.valueOf(flightData.airportOriginId()),
+                                    String.valueOf(flightData.airportDestinationId()),
                                     flightData.departureTime(),
                                     flightData.arrivalTime()
                             )

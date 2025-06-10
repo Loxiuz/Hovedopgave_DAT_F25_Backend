@@ -61,9 +61,8 @@ public class FlightService {
 
     private FlightDTO toDto(Flight flight) {
         return new FlightDTO(
-                flight.getId(),
-                flight.getAirportOrigin(),
-                flight.getAirportDestination(),
+                flight.getAirportOrigin().getId(),
+                flight.getAirportDestination().getId(),
                 flight.getFlightNumber(),
                 flight.getDepartureTime(),
                 flight.getArrivalTime()
