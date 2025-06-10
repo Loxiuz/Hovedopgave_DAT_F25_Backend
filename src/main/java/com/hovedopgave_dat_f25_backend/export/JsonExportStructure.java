@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.function.Function;
 
 public record JsonExportStructure<E>(List<E> data, List<String> entityFields,
-                                     Function<E, List<String>> entityMapper) implements ExportStructure {
+                                     Function<E, List<String>> rowDataMapper) implements ExportStructure {
 
     public String buildData() {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < data.size(); i++) {
             E item = data.get(i);
-            List<String> row = entityMapper.apply(item);
+            List<String> row = rowDataMapper.apply(item);
             builder.append("            {\n");
             for (int j = 0; j < entityFields.size(); j++) {
                 String field = entityFields.get(j);
